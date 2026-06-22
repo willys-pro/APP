@@ -507,6 +507,286 @@
     </div>
   </div>
 
+   <!-- RATINGS AND REVIEWS -->
+<style>
+:root{
+  --bg:#0A0E1A;--surface:#101628;--card:#141B2D;--border:#1E2A44;
+  --accent:#00E5FF;--gold:#FFD166;--green:#06D6A0;--text:#E8EDF8;--muted:#8895B3;
+  --font-head:'Space Grotesk',sans-serif;--font-mono:'JetBrains Mono',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);font-family:var(--font-head);color:var(--text);padding:0;}
+.wrap{width:100%;max-width:900px;margin:0 auto;}
+
+.sec-label{font-family:var(--font-mono);font-size:10px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--accent);margin-bottom:16px;}
+
+/* ── SUMMARY BAR ── */
+.summary{display:flex;align-items:center;gap:32px;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:24px 28px;margin-bottom:20px;flex-wrap:wrap;}
+.big-score{text-align:center;flex-shrink:0;}
+.big-score .num{font-size:56px;font-weight:700;color:#fff;line-height:1;}
+.big-score .stars-row{display:flex;gap:3px;justify-content:center;margin:6px 0 4px;}
+.big-score .cnt{font-family:var(--font-mono);font-size:11px;color:var(--muted);}
+.bars{flex:1;min-width:180px;display:flex;flex-direction:column;gap:7px;}
+.bar-row{display:flex;align-items:center;gap:8px;font-size:12px;font-family:var(--font-mono);}
+.bar-row .lbl{color:var(--muted);width:36px;text-align:right;flex-shrink:0;}
+.bar-track{flex:1;height:6px;background:var(--border);border-radius:4px;overflow:hidden;}
+.bar-fill{height:100%;border-radius:4px;background:var(--gold);}
+.bar-row .pct{color:var(--muted);width:30px;font-size:10px;}
+
+/* ── FLAGS ROW ── */
+.flags-wrap{margin-bottom:24px;}
+.flags-label{font-family:var(--font-mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;}
+.flags-row{display:flex;flex-wrap:wrap;gap:8px;}
+.flag-chip{display:flex;align-items:center;gap:6px;background:var(--card);border:1px solid var(--border);border-radius:20px;padding:5px 12px 5px 8px;font-size:11px;font-family:var(--font-mono);color:var(--muted);white-space:nowrap;}
+.flag-chip .f{font-size:18px;line-height:1;}
+.flag-chip .c{color:var(--text);}
+
+/* ── ADD REVIEW FORM ── */
+.add-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:22px 24px;margin-bottom:24px;}
+.add-card h3{font-size:14px;font-weight:600;color:#fff;margin-bottom:14px;}
+.star-picker{display:flex;gap:6px;margin-bottom:14px;cursor:pointer;}
+.star-picker .sp{font-size:26px;color:var(--border);transition:color .15s;cursor:pointer;}
+.star-picker .sp.on{color:var(--gold);}
+.form-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px;}
+.form-row input{flex:1;min-width:140px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:9px 12px;font-family:var(--font-head);font-size:13px;color:var(--text);outline:none;}
+.form-row input:focus{border-color:var(--accent);}
+textarea.rv-text{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 12px;font-family:var(--font-head);font-size:13px;color:var(--text);resize:vertical;min-height:72px;outline:none;}
+textarea.rv-text:focus{border-color:var(--accent);}
+.submit-btn{margin-top:12px;background:var(--accent);color:#0A0E1A;font-family:var(--font-head);font-weight:700;font-size:13px;padding:10px 22px;border-radius:8px;border:none;cursor:pointer;}
+.submit-btn:hover{opacity:.88;}
+
+/* ── REVIEWS LIST ── */
+.review-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px 20px;margin-bottom:12px;position:relative;}
+.rv-header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:8px;}
+.rv-left{display:flex;align-items:center;gap:10px;}
+.rv-avatar{width:38px;height:38px;border-radius:50%;background:rgba(0,229,255,.12);border:1px solid rgba(0,229,255,.25);display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;}
+.rv-name{font-weight:600;font-size:13px;color:#fff;}
+.rv-meta{font-family:var(--font-mono);font-size:10px;color:var(--muted);margin-top:2px;}
+.rv-stars{display:flex;gap:2px;}
+.rv-star{font-size:13px;color:var(--gold);}
+.rv-star.empty{color:var(--border);}
+.rv-body{font-size:13px;color:#C4CDDF;line-height:1.65;}
+.rv-actions{display:flex;gap:8px;margin-top:10px;}
+.rv-btn{background:transparent;border:1px solid var(--border);border-radius:6px;color:var(--muted);font-size:11px;font-family:var(--font-mono);padding:4px 10px;cursor:pointer;}
+.rv-btn:hover{border-color:var(--accent);color:var(--accent);}
+.rv-edit-area{width:100%;background:var(--surface);border:1px solid var(--accent);border-radius:8px;padding:8px 10px;font-family:var(--font-head);font-size:13px;color:var(--text);resize:vertical;min-height:60px;margin-top:8px;outline:none;}
+.rv-save{background:var(--green);color:#0A0E1A;font-weight:700;font-size:11px;font-family:var(--font-mono);padding:5px 14px;border-radius:6px;border:none;cursor:pointer;margin-top:6px;}
+.helpful{font-family:var(--font-mono);font-size:10px;color:var(--muted);margin-left:auto;align-self:center;}
+.verified{display:inline-flex;align-items:center;gap:4px;background:rgba(6,214,160,.1);border:1px solid rgba(6,214,160,.25);color:var(--green);font-family:var(--font-mono);font-size:9px;padding:2px 8px;border-radius:20px;margin-left:6px;}
+.msg{font-size:12px;font-family:var(--font-mono);color:var(--green);margin-top:8px;}
+</style>
+
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+<div class="wrap" style="padding:32px 24px;">
+
+<div class="sec-label">// Client ratings & reviews</div>
+
+<!-- SUMMARY -->
+<div class="summary">
+  <div class="big-score">
+    <div class="num">5.0</div>
+    <div class="stars-row" id="big-stars"></div>
+    <div class="cnt">107 reviews</div>
+  </div>
+  <div class="bars" id="bars-container"></div>
+</div>
+
+<!-- FLAGS -->
+<div class="flags-wrap">
+  <div class="flags-label">Clients from around the world</div>
+  <div class="flags-row" id="flags-row"></div>
+</div>
+
+<!-- ADD REVIEW -->
+<div class="add-card">
+  <h3>Leave a review</h3>
+  <div class="star-picker" id="star-picker">
+    <span class="sp" data-v="1">★</span>
+    <span class="sp" data-v="2">★</span>
+    <span class="sp" data-v="3">★</span>
+    <span class="sp" data-v="4">★</span>
+    <span class="sp" data-v="5">★</span>
+  </div>
+  <div class="form-row">
+    <input id="rv-name-in" type="text" placeholder="Your name" />
+    <input id="rv-country-in" type="text" placeholder="Country (e.g. USA 🇺🇸)" />
+  </div>
+  <textarea class="rv-text" id="rv-body-in" placeholder="Share your experience working with Willys…"></textarea>
+  <button class="submit-btn" onclick="submitReview()">Post review</button>
+  <div id="submit-msg"></div>
+</div>
+
+<!-- REVIEWS LIST -->
+<div id="reviews-list"></div>
+
+</div>
+
+<script>
+const STARS = ['★','★','★','★','★'];
+
+const countries = [
+  {flag:'🇺🇸',name:'USA',count:24},
+  {flag:'🇬🇧',name:'UK',count:18},
+  {flag:'🇩🇪',name:'Germany',count:12},
+  {flag:'🇨🇦',name:'Canada',count:10},
+  {flag:'🇦🇺',name:'Australia',count:9},
+  {flag:'🇳🇱',name:'Netherlands',count:7},
+  {flag:'🇸🇦',name:'Saudi Arabia',count:6},
+  {flag:'🇫🇷',name:'France',count:5},
+  {flag:'🇸🇬',name:'Singapore',count:4},
+  {flag:'🇿🇦',name:'South Africa',count:4},
+  {flag:'🇮🇳',name:'India',count:4},
+  {flag:'🇳🇬',name:'Nigeria',count:4},
+];
+
+const barData = [{lbl:'5 ★',pct:87},{lbl:'4 ★',pct:9},{lbl:'3 ★',pct:3},{lbl:'2 ★',pct:1},{lbl:'1 ★',pct:0}];
+
+let reviews = [
+  {id:1,name:'Jason M.',country:'USA 🇺🇸',stars:5,body:'Willys built our trading dashboard in under 48 hours. The code was clean, well-documented, and exactly what we specified. Will hire again.',helpful:14,verified:true},
+  {id:2,name:'Sophie W.',country:'Germany 🇩🇪',stars:5,body:'Outstanding work on our e-commerce integration. He connected our Shopify store to a custom analytics pipeline without a single bug. Highly professional.',helpful:9,verified:true},
+  {id:3,name:'David K.',country:'UK 🇬🇧',stars:5,body:'Fixed a nasty WebSocket bug in our live-data app that two other devs couldn\'t crack. Fast, communicates well, and charges fairly.',helpful:11,verified:true},
+  {id:4,name:'Aisha R.',country:'Canada 🇨🇦',stars:5,body:'The landing page he made for our SaaS product is pixel-perfect and loads in under 1 second. Worth every dollar.',helpful:7,verified:true},
+  {id:5,name:'Marcus T.',country:'Australia 🇦🇺',stars:5,body:'Hired for a Deriv trading bot. He delivered a fully automated strategy with risk management controls. Profit immediately.',helpful:16,verified:true},
+  {id:6,name:'Priya N.',country:'Singapore 🇸🇬',stars:5,body:'React dashboard with real-time charts, role-based auth, and a REST API backend — all in one week. Exceptional.',helpful:8,verified:true},
+];
+
+let nextId = 7;
+let pickedStars = 0;
+
+function renderBigStars(){
+  const c=document.getElementById('big-stars');
+  c.innerHTML=STARS.map(s=>`<span style="color:var(--gold);font-size:18px;">${s}</span>`).join('');
+}
+
+function renderBars(){
+  const c=document.getElementById('bars-container');
+  c.innerHTML=barData.map(b=>`
+    <div class="bar-row">
+      <span class="lbl">${b.lbl}</span>
+      <div class="bar-track"><div class="bar-fill" style="width:${b.pct}%"></div></div>
+      <span class="pct">${b.pct}%</span>
+    </div>`).join('');
+}
+
+function renderFlags(){
+  const c=document.getElementById('flags-row');
+  c.innerHTML=countries.map(ct=>`
+    <div class="flag-chip">
+      <span class="f">${ct.flag}</span>
+      <span class="c">${ct.name}</span>
+      <span style="color:var(--muted);font-size:10px;">${ct.count}</span>
+    </div>`).join('');
+}
+
+function starHtml(n){
+  return [1,2,3,4,5].map(i=>`<span class="rv-star${i<=n?'':' empty'}">★</span>`).join('');
+}
+
+function initials(name){return name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();}
+
+function renderReviews(){
+  const c=document.getElementById('reviews-list');
+  c.innerHTML=reviews.map(rv=>`
+    <div class="review-card" id="rv-${rv.id}">
+      <div class="rv-header">
+        <div class="rv-left">
+          <div class="rv-avatar">${rv.flag||'👤'}</div>
+          <div>
+            <div class="rv-name">${rv.name}${rv.verified?'<span class="verified">✓ verified</span>':''}</div>
+            <div class="rv-meta">${rv.country}</div>
+          </div>
+        </div>
+        <div class="rv-stars">${starHtml(rv.stars)}</div>
+      </div>
+      <div class="rv-body" id="body-${rv.id}">${rv.body}</div>
+      <div class="rv-actions">
+        <button class="rv-btn" onclick="toggleEdit(${rv.id})">✎ Edit</button>
+        <button class="rv-btn" onclick="likeReview(${rv.id})">👍 Helpful (${rv.helpful})</button>
+        <button class="rv-btn" onclick="deleteReview(${rv.id})" style="color:#E24B4A;border-color:#3a1a1a;">✕</button>
+      </div>
+      <div id="edit-area-${rv.id}" style="display:none;">
+        <textarea class="rv-edit-area" id="edit-ta-${rv.id}">${rv.body}</textarea>
+        <button class="rv-save" onclick="saveEdit(${rv.id})">Save</button>
+      </div>
+    </div>`).join('');
+}
+
+function toggleEdit(id){
+  const area=document.getElementById(`edit-area-${id}`);
+  area.style.display=area.style.display==='none'?'block':'none';
+}
+
+function saveEdit(id){
+  const ta=document.getElementById(`edit-ta-${id}`);
+  const rv=reviews.find(r=>r.id===id);
+  if(rv){rv.body=ta.value;}
+  document.getElementById(`body-${id}`).textContent=ta.value;
+  document.getElementById(`edit-area-${id}`).style.display='none';
+}
+
+function likeReview(id){
+  const rv=reviews.find(r=>r.id===id);
+  if(rv){rv.helpful++;renderReviews();}
+}
+
+function deleteReview(id){
+  reviews=reviews.filter(r=>r.id!==id);
+  renderReviews();
+}
+
+function setupStarPicker(){
+  const spans=document.querySelectorAll('#star-picker .sp');
+  spans.forEach(sp=>{
+    sp.addEventListener('mouseover',()=>{
+      const v=+sp.dataset.v;
+      spans.forEach(s=>s.classList.toggle('on',+s.dataset.v<=v));
+    });
+    sp.addEventListener('mouseout',()=>{
+      spans.forEach(s=>s.classList.toggle('on',+s.dataset.v<=pickedStars));
+    });
+    sp.addEventListener('click',()=>{
+      pickedStars=+sp.dataset.v;
+      spans.forEach(s=>s.classList.toggle('on',+s.dataset.v<=pickedStars));
+    });
+  });
+}
+
+const FLAGS_MAP={'usa':'🇺🇸','uk':'🇬🇧','germany':'🇩🇪','canada':'🇨🇦','australia':'🇦🇺','france':'🇫🇷','netherlands':'🇳🇱','india':'🇮🇳','nigeria':'🇳🇬','singapore':'🇸🇬','south africa':'🇿🇦','saudi arabia':'🇸🇦','kenya':'🇰🇪','uae':'🇦🇪','sweden':'🇸🇪','brazil':'🇧🇷','japan':'🇯🇵','italy':'🇮🇹','spain':'🇪🇸','norway':'🇳🇴'};
+
+function getFlag(country){
+  const k=country.toLowerCase().replace(/[^a-z ]/g,'').trim();
+  for(const [key,flag] of Object.entries(FLAGS_MAP)){if(k.includes(key))return flag;}
+  return '🌍';
+}
+
+function submitReview(){
+  const name=document.getElementById('rv-name-in').value.trim();
+  const country=document.getElementById('rv-country-in').value.trim();
+  const body=document.getElementById('rv-body-in').value.trim();
+  const msg=document.getElementById('submit-msg');
+  if(!name){msg.innerHTML='<span style="color:#E24B4A;font-size:11px;font-family:var(--font-mono);">Please enter your name.</span>';return;}
+  if(!pickedStars){msg.innerHTML='<span style="color:#E24B4A;font-size:11px;font-family:var(--font-mono);">Please pick a star rating.</span>';return;}
+  if(!body){msg.innerHTML='<span style="color:#E24B4A;font-size:11px;font-family:var(--font-mono);">Please write a review.</span>';return;}
+  const flag=getFlag(country||'');
+  reviews.unshift({id:nextId++,name,country:country||'International 🌍',stars:pickedStars,body,helpful:0,verified:false,flag});
+  renderReviews();
+  document.getElementById('rv-name-in').value='';
+  document.getElementById('rv-country-in').value='';
+  document.getElementById('rv-body-in').value='';
+  pickedStars=0;
+  document.querySelectorAll('#star-picker .sp').forEach(s=>s.classList.remove('on'));
+  msg.innerHTML='<span style="color:var(--green);font-size:11px;font-family:var(--font-mono);">✓ Review posted!</span>';
+  setTimeout(()=>msg.innerHTML='',3000);
+}
+
+renderBigStars();
+renderBars();
+renderFlags();
+setupStarPicker();
+renderReviews();
+</script>
+
 </div>
 
 </body>
